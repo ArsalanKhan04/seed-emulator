@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - master
+      - ethereum2025
+  workflow_dispatch:
 
 jobs:
   compile-examples:
