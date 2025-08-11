@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - ethereum2025
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   compile-examples:
