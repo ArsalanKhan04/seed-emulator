@@ -1,10 +1,10 @@
-name: Check Pull Request
+name: Check Pull Request by running blockchain tests
 
 on:
   pull_request:
     branches:
       - ethereum2025
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   compile-examples:
