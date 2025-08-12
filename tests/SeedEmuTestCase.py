@@ -122,10 +122,12 @@ class SeedEmuTestCase(ut.TestCase):
 
         log_file = os.path.join(cls.init_dir, cls.test_log, "build_log")
         f = open(log_file, 'w')
+        print("Started building containers, log file: {}".format(log_file))
         if(cls.docker_compose_version == 1):
             result = subprocess.run(["docker-compose", "build"], stderr=f, stdout=f)
         else:
             result = subprocess.run(["DOCKER_BUILDKIT=0", "docker", "compose", "build"], stderr=f, stdout=f)
+        print("Ended building containers, log file: {}".format(log_file))
 
         f.close()
         os.system("echo 'y' | docker system prune > /dev/null")
