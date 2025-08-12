@@ -125,7 +125,7 @@ class SeedEmuTestCase(ut.TestCase):
         if(cls.docker_compose_version == 1):
             result = subprocess.run(["docker-compose", "build"], stderr=f, stdout=f)
         else:
-            result = subprocess.run(["docker", "compose", "build"], stderr=f, stdout=f)
+            result = subprocess.run(["DOCKER_BUILDKIT=0", "docker", "compose", "build"], stderr=f, stdout=f)
 
         f.close()
         os.system("echo 'y' | docker system prune > /dev/null")
