@@ -91,7 +91,7 @@ class CompileTest(ut.TestCase):
                     with open(log_file, 'a') as f:
                         f.write('########### {} Test ##############\n'.format(dir))
                         if(docker_compose_version == 1):
-                            result = subprocess.run(["DOCKER_BUILDKIT=0", "docker-compose", "build"], stderr=f, stdout=f)
+                            result = subprocess.run(["docker-compose", "build"], env=env, stderr=f, stdout=f)
                         else:
                             result = subprocess.run(["docker", "compose", "build"], env=env, stderr=f, stdout=f)
 
