@@ -70,6 +70,8 @@ class CompileTest(ut.TestCase):
     def build_test(self):
         log_file = os.path.join(self.init_cwd, 'test_log', "build_log.txt")
         print(log_file)
+        env = os.environ.copy()
+        env["DOCKER_BUILDKIT"] = "0"
         with open(os.devnull, 'w') as f:
             result = subprocess.run(["docker", "compose"], stdout=f)
             if result.returncode == 0:
@@ -91,7 +93,7 @@ class CompileTest(ut.TestCase):
                         if(docker_compose_version == 1):
                             result = subprocess.run(["DOCKER_BUILDKIT=0", "docker-compose", "build"], stderr=f, stdout=f)
                         else:
-                            result = subprocess.run(["DOCKER_BUILDKIT=0", "docker", "compose", "build"], stderr=f, stdout=f)
+                            result = subprocess.run(["docker", "compose", "build"], env=env, stderr=f, stdout=f)
 
                     os.system("echo 'y' | docker system prune > /dev/null")
                     assert result.returncode == 0, "docker build failed"

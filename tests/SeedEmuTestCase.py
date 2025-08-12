@@ -119,6 +119,8 @@ class SeedEmuTestCase(ut.TestCase):
         """
         cls.printLog("Building Docker Containers...")
         os.chdir(os.path.join(cls.emulator_code_dir, cls.output_dir))
+        env = os.environ.copy()
+        env["DOCKER_BUILDKIT"] = "0"
 
         log_file = os.path.join(cls.init_dir, cls.test_log, "build_log")
         f = open(log_file, 'w')
