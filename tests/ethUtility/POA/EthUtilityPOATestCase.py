@@ -3,7 +3,7 @@
 
 import unittest as ut
 from web3 import Web3, HTTPProvider
-from web3.middleware import geth_poa_middleware
+from web3.middleware import ExtraDataToPOAMiddleware
 from seedemu import *
 import time
 import json
@@ -20,7 +20,7 @@ class EthUtilityPOATestCase(SeedEmuTestCase):
         cls.faucet_port = 80
         cls.eth_init_node_port = 5000
         cls.web3 = Web3(HTTPProvider(f"http://{cls.rpc_url}:{cls.rpc_port}"))
-        cls.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+        cls.web3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
         return
 
     @classmethod

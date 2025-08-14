@@ -1,5 +1,5 @@
 from web3 import Web3
-from web3.middleware import geth_poa_middleware
+from web3.middleware import ExtraDataToPOAMiddleware
 from eth_account import Account
 import os, sys, random, subprocess
 import json
@@ -186,7 +186,7 @@ class Wallet:
         self._url = url
         self._web3 = Web3(Web3.HTTPProvider(url))
         if isPOA:
-            self._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+            self._web3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
         assert self._web3.isConnected(), "Connection failed"
 
         return self

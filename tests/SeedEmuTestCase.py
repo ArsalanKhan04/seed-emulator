@@ -93,6 +93,7 @@ class SeedEmuTestCase(ut.TestCase):
         os.chdir(cls.emulator_code_dir)
 
         log_file = os.path.join(cls.init_dir, cls.test_log, "compile_log")
+        cls.printLog(f"{log_file}")
         f = open(log_file, 'w')
         if os.path.exists(cls.output_dir):
             shutil.rmtree(cls.output_dir)

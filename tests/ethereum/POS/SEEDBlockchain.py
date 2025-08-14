@@ -1,9 +1,9 @@
 from web3 import Web3
-from web3.middleware import geth_poa_middleware
 from eth_account import Account
 import os, sys, random, subprocess
 import json
 import docker
+import time
 
 
 class Wallet: 
@@ -184,12 +184,28 @@ class Wallet:
         """
 
         self._url = url
-        self._web3 = Web3(Web3.HTTPProvider(url))
+        print("TRYING TO CONNECT TO BLOCKCHAIN: %s" % url)
+        self._web3 = Web3(Web3.HTTPProvider(url)) # Version update
+        print("IG SUCCESSFUL MAYBE??" % url)
         if isPOA:
             self._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         assert self._web3.isConnected(), "Connection failed"
 
         return self
+
+
+    def wait_with_indexing_retry(self, tx_hash, timeout=120, poll_interval=2):
+        start = time.time()
+        while True:
+            try:
+                return self._web3.eth.wait_for_transaction_receipt(tx_hash, timeout=poll_interval)
+            except ValueError as e:
+                if "transaction indexing is in progress" in str(e):
+                    time.sleep(poll_interval)
+                else:
+                    raise
+            if time.time() - start > timeout:
+                raise TimeoutError("Timed out waiting for transaction receipt")
 
     def sendRawTransaction(self, key, transaction:dict, wait=True, verbose=True):
         """!
@@ -212,7 +228,7 @@ class Wallet:
 
         if wait:
            print("Waiting for receipt ...")
-           tx_receipt = self._web3.eth.wait_for_transaction_receipt(tx_hash)
+           tx_receipt = self.wait_with_indexing_retry(tx_hash)
            if verbose:
                Wallet.printTransactionReceipt(tx_receipt, short=False)
            else:

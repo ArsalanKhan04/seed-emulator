@@ -71,7 +71,7 @@ class CompileTest(ut.TestCase):
         log_file = os.path.join(self.init_cwd, 'test_log', "build_log.txt")
         print(log_file)
         env = os.environ.copy()
-        env["DOCKER_BUILDKIT"] = "0"
+        env["DOCKER_BUILDKIT"] = "1"
         with open(os.devnull, 'w') as f:
             result = subprocess.run(["docker", "compose"], stdout=f)
             if result.returncode == 0:
