@@ -20,9 +20,6 @@ eth = EthereumService()
 # supported consensus option: ConsensusMechanism.POA, ConsensusMechanism.POW, ConsensusMechanism.POS
 blockchain = eth.createBlockchain(chainName="pos", consensus=ConsensusMechanism.POS)
 
-# set `terminal_total_difficulty`, which is the value to designate when the Merge is happen.
-blockchain.setTerminalTotalDifficulty(30)
-
 asns = [150, 151, 152, 153, 154, 160, 161, 162, 163, 164]
 
 ###################################################
@@ -38,6 +35,7 @@ for asn in asns:
         e.appendClassName('Ethereum-POS-{}'.format(i))
 
         # Enable Geth to communicate with geth node via http
+        e.enableGethWs().setGethWsPort(8541)
         e.enableGethHttp()
 
         # Set host in asn 150 with id 0 (ip : 10.150.0.71) as BeaconSetupNode.
@@ -65,7 +63,6 @@ for asn in asns:
         # these hosts will be the signer nodes.
         if asn in [152,153,154,160,161,162,163,164]:
             e.enablePOSValidatorAtGenesis()
-            e.startMiner()
 
         # Customizing the display names (for visualiztion purpose)
         if e.isBeaconSetupNode():
@@ -85,7 +82,7 @@ emu.addLayer(eth)
 emu.render()
 
 # Access an environment variable
-platform = os.environ.get('platform')
+platform_env = os.environ.get("platform")
 
 platform_mapping = {
     "amd": Platform.AMD64,
