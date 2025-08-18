@@ -3,6 +3,7 @@
 
 from seedemu import *
 import os 
+import platform as sys_platform
 
 emu = Makers.makeEmulatorBaseWith10StubASAndHosts(1)
 
@@ -57,13 +58,27 @@ emu.addLayer(eth)
 
 emu.render()
 
-# Access an environment variable
-platform = os.environ.get('platform')
+platform_env = os.environ.get("platform")
 
 platform_mapping = {
     "amd": Platform.AMD64,
     "arm": Platform.ARM64
 }
-docker = Docker(platform=platform_mapping[platform])
+
+def detect_platform():
+    machine = sys_platform.machine().lower()
+    if machine in ("x86_64", "amd64", "i386", "i686", "x86"):
+        return Platform.AMD64
+    elif machine in ("aarch64", "arm64") or machine.startswith("arm"):
+        return Platform.ARM64
+    else:
+        raise RuntimeError(f"Unsupported platform: {machine}")
+
+if platform_env and platform_env.lower() in platform_mapping:
+    detected_platform = platform_mapping[platform_env.lower()]
+else:
+    detected_platform = detect_platform()
+
+docker = Docker(platform=detected_platform)
 
 emu.compile(docker, './output')

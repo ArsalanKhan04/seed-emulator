@@ -3,6 +3,7 @@
 
 from seedemu import *
 import os
+import platform as sys_platform
 
 # Create Emulator Base with 10 Stub AS (150-154, 160-164) using Makers utility method.
 # hosts_per_stub_as=3 : create 3 hosts per one stub AS.
@@ -90,6 +91,21 @@ platform_mapping = {
     "amd": Platform.AMD64,
     "arm": Platform.ARM64
 }
-docker = Docker(platform=platform_mapping[platform])
+
+def detect_platform():
+    machine = sys_platform.machine().lower()
+    if machine in ("x86_64", "amd64", "i386", "i686", "x86"):
+        return Platform.AMD64
+    elif machine in ("aarch64", "arm64") or machine.startswith("arm"):
+        return Platform.ARM64
+    else:
+        raise RuntimeError(f"Unsupported platform: {machine}")
+
+if platform_env and platform_env.lower() in platform_mapping:
+    detected_platform = platform_mapping[platform_env.lower()]
+else:
+    detected_platform = detect_platform()
+
+docker = Docker(platform=detected_platform)
 
 emu.compile(docker, './output', override = True)

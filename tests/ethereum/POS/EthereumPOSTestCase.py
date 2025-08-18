@@ -3,7 +3,7 @@
 
 import time
 import unittest as ut
-from .SEEDBlockchain import Wallet
+from SEEDBlockchain import Wallet
 from seedemu import *
 import time
 import docker
